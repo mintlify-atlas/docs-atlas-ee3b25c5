@@ -1,80 +1,286 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quickstart
+description: Build your first AI agent with Agentor in under 5 minutes
 ---
 
-## Get started in three steps
+Get up and running with Agentor by building a simple weather agent and then exploring more advanced features.
 
-Get your documentation site running locally and make your first customization.
+## Prerequisites
 
-### Step 1: Set up your local environment
+Before starting, make sure you have:
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
+- Python 3.10 or higher installed
+- An API key for an LLM provider (OpenAI, Anthropic, or Google)
 
-### Step 2: Deploy your changes
+## Installation
 
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+<Steps>
+  <Step title="Install Agentor">
+    Install Agentor using pip:
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+    ```bash
+    pip install agentor
+    ```
+  </Step>
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+  <Step title="Set up your API key">
+    Set your LLM provider API key as an environment variable:
 
-### Step 3: Go live
+    ```bash
+    # For OpenAI
+    export OPENAI_API_KEY="your-api-key-here"
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+    # For Anthropic
+    export ANTHROPIC_API_KEY="your-api-key-here"
+
+    # For Google
+    export GEMINI_API_KEY="your-api-key-here"
+    ```
+  </Step>
+</Steps>
+
+## Build your first agent
+
+Create a simple weather agent that can answer questions about the weather:
+
+```python
+from agentor import Agentor
+
+agent = Agentor(
+    name="Weather Agent",
+    model="gpt-4o-mini",
+    tools=["get_weather"]
+)
+
+# Run the agent
+result = agent.run("What is the weather in London?")
+print(result)
+```
+
+<Note>
+The `get_weather` tool is a built-in tool that uses the WeatherAPI.com service. You'll need to set the `WEATHER_API_KEY` environment variable to use it.
+</Note>
+
+## Run with streaming
+
+See agent responses in real-time with streaming:
+
+```python
+import asyncio
+from agentor import Agentor
+
+agent = Agentor(
+    name="Weather Agent",
+    model="gpt-4o-mini",
+    tools=["get_weather"]
+)
+
+async def main():
+    async for event in agent.stream_chat("What is the weather in Tokyo?"):
+        print(event, flush=True)
+
+asyncio.run(main())
+```
+
+## Add custom instructions
+
+Guide your agent's behavior with custom instructions:
+
+```python
+from agentor import Agentor
+
+agent = Agentor(
+    name="Weather Bot",
+    model="gpt-4o-mini",
+    instructions="You are a friendly weather assistant. Always include temperature in both Celsius and Fahrenheit.",
+    tools=["get_weather"]
+)
+
+result = agent.run("How's the weather in Paris?")
+print(result)
+```
+
+## Use multiple tools
+
+Combine multiple tools to create more capable agents:
+
+```python
+from agentor import Agentor, function_tool
+
+@function_tool
+def calculate_temperature_diff(temp1: float, temp2: float) -> str:
+    """Calculate the temperature difference between two values."""
+    diff = abs(temp1 - temp2)
+    return f"The temperature difference is {diff}°F"
+
+agent = Agentor(
+    name="Weather Analyzer",
+    model="gpt-4o-mini",
+    tools=["get_weather", calculate_temperature_diff]
+)
+
+result = agent.run("What's the temperature difference between London and Paris?")
+print(result)
+```
+
+## Serve as an API
+
+Turn your agent into a REST API with a single line:
+
+```python
+from agentor import Agentor
+
+agent = Agentor(
+    name="Weather Agent",
+    model="gpt-4o-mini",
+    tools=["get_weather"]
+)
+
+# Serve the agent on port 8000
+agent.serve(port=8000)
+```
+
+This creates a FastAPI server with these endpoints:
+
+- `POST /chat` - Send messages to the agent
+- `GET /.well-known/agent-card.json` - A2A protocol agent card
+
+### Query the API
+
+Use curl to interact with your agent API:
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/chat' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "input": "What is the weather in London?"
+}'
+```
+
+## Deploy to production
+
+Deploy your agent to Celesto AI's serverless platform:
+
+<Steps>
+  <Step title="Install the Celesto CLI">
+    The CLI is included with Agentor:
+
+    ```bash
+    celesto --version
+    ```
+  </Step>
+
+  <Step title="Create your agent file">
+    Save your agent code to a Python file (e.g., `agent.py`):
+
+    ```python
+    from agentor import Agentor
+
+    agent = Agentor(
+        name="Weather Agent",
+        model="gpt-4o-mini",
+        tools=["get_weather"]
+    )
+
+    if __name__ == "__main__":
+        agent.serve()
+    ```
+  </Step>
+
+  <Step title="Deploy">
+    Deploy your agent with a single command:
+
+    ```bash
+    celesto deploy
+    ```
+
+    Your agent will be available at:
+    ```
+    https://api.celesto.ai/deploy/apps/<app-name>
+    ```
+  </Step>
+</Steps>
+
+## Use different LLM providers
+
+Agentor supports multiple LLM providers through LiteLLM:
+
+<CodeGroup>
+
+```python OpenAI
+from agentor import Agentor
+
+agent = Agentor(
+    name="My Agent",
+    model="gpt-4o-mini",  # or gpt-4o, gpt-4-turbo
+    tools=["get_weather"]
+)
+```
+
+```python Anthropic
+from agentor import Agentor
+
+agent = Agentor(
+    name="My Agent",
+    model="anthropic/claude-3.5-sonnet",
+    tools=["get_weather"]
+)
+```
+
+```python Google
+from agentor import Agentor
+
+agent = Agentor(
+    name="My Agent",
+    model="gemini/gemini-2.0-flash-exp",
+    tools=["get_weather"]
+)
+```
+
+</CodeGroup>
+
+## Configure model parameters
+
+Fine-tune model behavior with `ModelSettings`:
+
+```python
+from agentor import Agentor, ModelSettings
+
+agent = Agentor(
+    name="Creative Writer",
+    model="gpt-4o",
+    model_settings=ModelSettings(
+        temperature=0.9,  # More creative
+        max_tokens=2000,
+        top_p=0.95
+    ),
+    tools=[]
+)
+
+result = agent.run("Write a short story about a robot learning to paint")
+print(result)
+```
 
 ## Next steps
 
-Now that you have your docs running, explore these key features:
+Now that you've built your first agent, explore more advanced features:
 
 <CardGroup cols={2}>
+  <Card title="Building agents" icon="robot" href="/guides/building-agents">
+    Learn advanced agent patterns and best practices
+  </Card>
 
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
+  <Card title="Custom tools" icon="wrench" href="/guides/custom-tools">
+    Create custom tools for your agents
+  </Card>
 
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
+  <Card title="MCP servers" icon="server" href="/guides/mcp-servers">
+    Build MCP servers with LiteMCP
+  </Card>
 
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card title="Agent communication" icon="network-wired" href="/guides/agent-communication">
+    Enable agent-to-agent communication with A2A protocol
+  </Card>
 </CardGroup>
-
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>
