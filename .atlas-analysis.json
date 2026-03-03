@@ -1,0 +1,108 @@
+{
+  "projectType": "framework",
+  "projectName": "Agentor",
+  "projectDescription": "Python framework for building and deploying production-ready AI agents with MCP and A2A protocol support",
+  "theme": "aspen",
+  "primaryColor": "#6366F1",
+  "lightColor": "#818CF8",
+  "darkColor": "#4F46E5",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/agents",
+              "concepts/tools",
+              "concepts/mcp",
+              "concepts/a2a-protocol",
+              "concepts/skills",
+              "concepts/deployment"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/building-agents",
+              "guides/custom-tools",
+              "guides/mcp-servers",
+              "guides/agent-communication",
+              "guides/streaming",
+              "guides/deployment",
+              "guides/observability"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Core",
+            "pages": [
+              "api/agentor",
+              "api/llm",
+              "api/model-settings",
+              "api/tools"
+            ]
+          },
+          {
+            "group": "MCP",
+            "pages": [
+              "api/mcp/litemcp",
+              "api/mcp/router",
+              "api/mcp/hub"
+            ]
+          },
+          {
+            "group": "A2A Protocol",
+            "pages": [
+              "api/a2a/controller",
+              "api/a2a/types"
+            ]
+          },
+          {
+            "group": "Built-in Tools",
+            "pages": [
+              "api/tools/weather",
+              "api/tools/shell",
+              "api/tools/web-search",
+              "api/tools/calculator"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "FastAPI-compatible MCP server with decorator API",
+    "Agent-to-agent communication protocol",
+    "Serverless deployment support",
+    "Built-in observability and tracing",
+    "Tool search API for context optimization",
+    "Agent skills for dynamic task execution",
+    "Multi-LLM provider support"
+  ],
+  "publicApiSurface": [
+    "Agentor",
+    "LiteMCP",
+    "function_tool",
+    "tool",
+    "ToolSearch",
+    "A2AController",
+    "LLM",
+    "ModelSettings",
+    "LitellmModel",
+    "CelestoMCPHub"
+  ]
+}
