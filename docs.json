@@ -89,7 +89,11 @@
               "api/tools/weather",
               "api/tools/shell",
               "api/tools/web-search",
-              "api/tools/calculator"
+              "api/tools/calculator",
+              "api/tools/github",
+              "api/tools/gmail",
+              "api/tools/git",
+              "api/tools/fetch"
             ]
           }
         ]
